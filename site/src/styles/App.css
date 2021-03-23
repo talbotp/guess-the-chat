@@ -1,0 +1,36 @@
+.App {
+  background-color:#252830;
+  color: white;
+}
+
+.App-logo {
+  height: 15vmin;
+  pointer-events: none;
+  padding-top: 50px;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+.App-Title {
+  font-family: Dimitri;
+  font-size: 70px;
+  color: #9146FF;
+  text-align: center;
+}
+
+.App-Subtitle {
+  font-size: x-large;
+  text-align: center;
+}
+
+.App-Text {
+  font-size: x-large;
+  text-align: center;
+}
+
+@font-face {
+  font-family: 'Dimitri';
+  src: local('Dimitri'), url('../assets/DIMITRI_.TTF') format('truetype');
+}

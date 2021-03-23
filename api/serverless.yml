@@ -1,0 +1,64 @@
+service: guess-the-chat-api
+app: guess-the-chat
+org: talbotp
+
+frameworkVersion: "2"
+
+plugins:
+  - serverless-dynamodb-local
+  - serverless-offline
+
+custom:
+  apiDomain: api.guessthechat.com
+  wwwDomain: www.guessthechat.com
+  tokensTable: twitch-tokens
+  serverless-offline:
+    httpPort: 3030
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: prod
+  region: eu-west-1
+  environment:
+
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "dynamodb:GetItem"
+        - "dynamodb:PutItem"
+      Resource: 
+        - "arn:aws:dynamodb:*:*:table/twitch-tokens"
+  httpApi:
+    cors:
+      allowedOrigins:
+        - https://${self:custom.wwwDomain}
+      allowedHeaders:
+        - Content-Type
+        - Authorization
+      allowedMethods:
+        - GET
+
+functions:
+  randomStream:
+    handler: src/randomStream.handler
+    events:
+      - httpApi:
+          path: /stream/random
+          method: GET
+    environment: 
+      DEFAULT_NUMBER_OF_STREAMS: 25
+
+resources:
+  Resources:
+    TwitchTokens:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.tokensTable}
+        AttributeDefinitions: 
+          - AttributeName: token_type
+            AttributeType: S
+        BillingMode: PAY_PER_REQUEST
+        KeySchema:
+          - AttributeName: token_type
+            KeyType: HASH

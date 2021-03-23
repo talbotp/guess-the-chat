@@ -1,0 +1,76 @@
+service: guess-the-chat-site
+app: guess-the-chat
+org: talbotp
+
+frameworkVersion: '2'
+
+plugins:
+  - serverless-s3-sync
+
+custom:
+  rootDomain: guessthechat.com
+  wwwDomain: www.${self:custom.rootDomain}
+  s3Sync:
+    - bucketName: ${self:custom.wwwDomain}
+      localDir: build
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: eu-west-1
+
+resources:
+  Resources:
+    WwwDomainBucket:
+      Type: AWS::S3::Bucket
+      Properties: 
+        AccessControl: PublicRead
+        BucketName: ${self:custom.wwwDomain}
+        WebsiteConfiguration:
+          IndexDocument: index.html
+          ErrorDocument: 404.html
+    RootDomainBucket:
+      Type: AWS::S3::Bucket
+      Properties: 
+        BucketName: ${self:custom.rootDomain}
+        WebsiteConfiguration:
+          RedirectAllRequestsTo:
+            HostName: ${self:custom.wwwDomain}
+            Protocol: https
+    WebsiteBucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket:
+          Ref: WwwDomainBucket
+        PolicyDocument:
+          Statement:
+            - Sid: PublicReadGetObjectsCloudflare
+              Effect: Allow
+              Principal: "*"
+              Action:
+                - s3:GetObject
+              Resource: arn:aws:s3:::${self:custom.wwwDomain}/*
+              Condition: 
+                IpAddress:
+                  aws:SourceIp:
+                    - 2400:cb00::/32
+                    - 2405:8100::/32
+                    - 2405:b500::/32
+                    - 2606:4700::/32
+                    - 2803:f800::/32
+                    - 2c0f:f248::/32
+                    - 2a06:98c0::/29
+                    - 103.21.244.0/22
+                    - 103.22.200.0/22
+                    - 103.31.4.0/22
+                    - 104.16.0.0/12
+                    - 108.162.192.0/18
+                    - 131.0.72.0/22
+                    - 141.101.64.0/18
+                    - 162.158.0.0/15
+                    - 172.64.0.0/13
+                    - 173.245.48.0/20
+                    - 188.114.96.0/20
+                    - 190.93.240.0/20
+                    - 197.234.240.0/22
+                    - 198.41.128.0/17

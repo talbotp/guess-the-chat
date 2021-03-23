@@ -1,0 +1,11 @@
+.Header-Title {
+  font-family: Dimitri;
+  font-size: 35px;
+  text-align: center;
+}
+
+
+@font-face {
+  font-family: 'Dimitri';
+  src: local('Dimitri'), url('../assets/DIMITRI_.TTF') format('truetype');
+}

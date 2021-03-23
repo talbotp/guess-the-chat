@@ -1,0 +1,21 @@
+.Center-Content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: inherit;
+}
+
+.Twitch-Chat {
+}
+
+.Guess-Button {
+  display: block;
+}
+
+.Incorrect-Guess {
+  color: red;
+}
+
+.Correct-Guess {
+  color: green;
+}
